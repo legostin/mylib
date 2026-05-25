@@ -1,0 +1,20 @@
+node_modules/
+dist/
+.DS_Store
+
+# Vite
+*.local
+
+# Rust
+target/
+**/*.rs.bk
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/schemas/
+src-tauri/WixTools/
+
+# Editor / OS
+.vscode/
+.idea/
+*.tsbuildinfo
