@@ -35,7 +35,7 @@ import { AboutDialog } from "./components/AboutDialog";
 import { invalidateAll as invalidateCache } from "./lib/cache";
 import type { SidebarSection } from "./components/Sidebar";
 
-const APP_VERSION = "0.2.1";
+const APP_VERSION = "0.2.2";
 import { FilterPanel, countActiveFilters } from "./components/FilterPanel";
 import { openReaderWindow } from "./lib/readerWindow";
 import { ImportOverlay } from "./components/ImportOverlay";
