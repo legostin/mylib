@@ -131,10 +131,10 @@ export function ShareBar({ disabled }: Props) {
 
   const isStarting = status.stage === "starting" || busy;
   const label = status.running
-    ? "Остановить шаринг"
+    ? "Остановить каталог"
     : isStarting
       ? "Запуск…"
-      : "Поделиться (ngrok)";
+      : "Поднять каталог OPDS";
 
   const klass = ["share-toggle", status.running ? "on" : "", status.stage === "error" ? "err" : ""]
     .filter(Boolean)

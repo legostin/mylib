@@ -34,6 +34,7 @@ export function AboutDialog({ open, version, onClose }: Props) {
           Локальная читалка и каталогизатор для библиотек в формате INPX
           (Флибуста). FB2/EPUB ридер, экспорт, OPDS-шеринг.
         </p>
+        <div className="about-author">Автор: Легостин Вячеслав</div>
         <div className="about-link-row">
           <button
             className="link about-link"
