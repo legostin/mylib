@@ -25,7 +25,7 @@ pub struct LibraryState {
     db_path: PathBuf,
     index: Arc<Mutex<LibraryIndex>>,
     /// Cached directory that contains the companion `.zip` archives. Populated
-    /// lazily the first time we resolve a book file — Flibusta-style flash
+    /// lazily the first time we resolve a book file — INPX flash
     /// drives often keep the books in a subdirectory rather than next to the
     /// INPX itself.
     books_dir: Mutex<Option<PathBuf>>,

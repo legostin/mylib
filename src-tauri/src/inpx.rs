@@ -6,7 +6,7 @@ use encoding_rs::{UTF_8, WINDOWS_1251};
 use crate::error::Result;
 use crate::model::{AuthorName, InpRecord};
 
-/// Default field order used by MyHomeLib / Flibusta INPX when no structure.info
+/// Default field order used by MyHomeLib-style INPX when no structure.info
 /// is provided.
 const DEFAULT_STRUCTURE: &[&str] = &[
     "AUTHOR", "GENRE", "TITLE", "SERIES", "SERNO", "FILE", "SIZE", "LIBID", "DEL", "EXT", "DATE",

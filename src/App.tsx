@@ -32,6 +32,7 @@ import { LanguagesBrowse } from "./components/LanguagesBrowse";
 import { LibraryHome } from "./components/LibraryHome";
 import { ActiveFilterChips } from "./components/ActiveFilterChips";
 import { AboutDialog } from "./components/AboutDialog";
+import { CenterLoader } from "./components/CenterLoader";
 import { invalidateAll as invalidateCache } from "./lib/cache";
 import type { SidebarSection } from "./components/Sidebar";
 
@@ -103,6 +104,7 @@ function App() {
   const current = trail[trail.length - 1];
   const [activeSection, setActiveSection] = useState<SidebarSection>("library");
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [selection, setSelection] = useState<Selection>(emptySelection);
@@ -190,12 +192,14 @@ function App() {
     let cancelled = false;
     const q = debouncedQuery.trim();
     if (!q) {
+      setSearching(false);
       // Clearing search pops the trail back to root if a search is on top.
       setTrail((t) =>
         t.length > 0 && t[t.length - 1].kind === "search" ? t.slice(0, -1) : t,
       );
       return;
     }
+    setSearching(true);
     api
       .search(q, scope, filters, 30)
       .then((r) => {
@@ -208,8 +212,13 @@ function App() {
           { kind: "search", query: q, results: r },
         ]);
       })
-      .catch((e) => !cancelled && setError(String(e)));
+      .catch((e) => !cancelled && setError(String(e)))
+      .finally(() => {
+        if (!cancelled) setSearching(false);
+      });
     return () => {
+      // Marking cancelled drops the result of an in-flight request — the
+      // backend SQL keeps running, but we no longer race to update state.
       cancelled = true;
     };
   }, [debouncedQuery, scope, filters]);
@@ -650,6 +659,12 @@ function App() {
                   onClick:
                     i === trail.length - 1 ? undefined : () => onCrumbClick(i),
                 }))}
+              />
+            )}
+            {searching && (
+              <CenterLoader
+                label="Ищу…"
+                hint={query.trim() ? `«${query.trim()}»` : null}
               />
             )}
             {current.kind === "browse" && current.section === "library" && (

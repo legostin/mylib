@@ -1,9 +1,9 @@
 /// Russian display names + categories for the standard FB2 genre dictionary.
 ///
 /// FB2 codes follow the convention `<category>_<subgenre>`. We map the
-/// commonly-seen codes from the FictionBook 2.x spec (and Flibusta
-/// extensions). Unknown codes fall back to the raw code with a `?` marker;
-/// `categoryFor` slots them under "Другое".
+/// commonly-seen codes from the FictionBook 2.x spec and the broader
+/// community-extended set. Unknown codes fall back to the raw code with a
+/// `?` marker; `categoryFor` slots them under "Другое".
 
 export type GenreInfo = {
   ru: string;
