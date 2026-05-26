@@ -154,6 +154,14 @@ pub fn get_series_view(
 }
 
 #[tauri::command]
+pub fn lookup_author_id(
+    state: State<Arc<LibraryState>>,
+    display: String,
+) -> Result<Option<i64>> {
+    state.author_id_by_display(&display)
+}
+
+#[tauri::command]
 pub fn list_author_letters(
     state: State<Arc<LibraryState>>,
     filters: Option<BookFilters>,

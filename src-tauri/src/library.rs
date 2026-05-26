@@ -183,6 +183,10 @@ impl LibraryState {
         self.lock()?.author_display(author_id)
     }
 
+    pub fn author_id_by_display(&self, display: &str) -> Result<Option<i64>> {
+        self.lock()?.author_id_by_display(display)
+    }
+
     pub fn author_first_letters(
         &self,
         filters: &BookFilters,

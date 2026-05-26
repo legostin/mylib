@@ -36,6 +36,8 @@ export const api = {
   genres: (filters: BookFilters = {}) =>
     invoke<GenreHit[]>("list_genres", { filters }),
   archives: () => invoke<ArchiveHit[]>("list_archives"),
+  lookupAuthorId: (display: string) =>
+    invoke<number | null>("lookup_author_id", { display }),
   authorLetters: (filters: BookFilters) =>
     invoke<[string, number][]>("list_author_letters", { filters }),
   authorPrefixes: (letter: string, filters: BookFilters) =>

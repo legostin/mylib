@@ -17,6 +17,9 @@ type Props = {
   onListsChanged: () => void;
   onExport: (bookIds: number[]) => void | Promise<void>;
   onRead?: (book: Book) => void;
+  onPickAuthor?: (id: number) => void;
+  onPickSeries?: (name: string) => void;
+  onPickGenre?: (code: string) => void;
 };
 
 export function BookDetail({
@@ -26,6 +29,9 @@ export function BookDetail({
   onListsChanged,
   onExport,
   onRead,
+  onPickAuthor,
+  onPickSeries,
+  onPickGenre,
 }: Props) {
   const [content, setContent] = useState<BookContent | null>(null);
   const [loadingContent, setLoadingContent] = useState(false);
@@ -101,15 +107,44 @@ export function BookDetail({
   const ext = (book.ext || "").toLowerCase();
   const canRead = ext === "fb2" || ext === "epub";
 
-  const authorsText = book.authors
-    .map((a) => [a.last, a.first, a.middle].filter(Boolean).join(" "))
-    .join(", ");
+  const authorEntries = book.authors.map((a) => ({
+    display: [a.last, a.first, a.middle].filter(Boolean).join(" "),
+  }));
+
+  const onAuthorClick = async (display: string) => {
+    if (!onPickAuthor || !display) return;
+    try {
+      const id = await api.lookupAuthorId(display);
+      if (id != null) onPickAuthor(id);
+    } catch {
+      /* swallow — clicking author is a navigation nicety, not critical */
+    }
+  };
 
   return (
     <section className="book-detail">
       <div className="section-label">Выбрано</div>
       <h2 className="book-title">{book.title || "(без названия)"}</h2>
-      {authorsText && <div className="authors">{authorsText}</div>}
+      {authorEntries.length > 0 && (
+        <div className="authors">
+          {authorEntries.map((a, i) => (
+            <span key={`${a.display}-${i}`}>
+              {i > 0 && ", "}
+              {onPickAuthor ? (
+                <button
+                  className="link"
+                  onClick={() => void onAuthorClick(a.display)}
+                  title="Открыть страницу автора"
+                >
+                  {a.display}
+                </button>
+              ) : (
+                a.display
+              )}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="detail-actions">
         {canRead && onRead && (
@@ -140,7 +175,17 @@ export function BookDetail({
           <>
             <dt>Серия</dt>
             <dd>
-              {book.series}
+              {onPickSeries ? (
+                <button
+                  className="link"
+                  onClick={() => onPickSeries(book.series!)}
+                  title="Открыть серию"
+                >
+                  {book.series}
+                </button>
+              ) : (
+                book.series
+              )}
               {book.ser_no ? ` #${book.ser_no}` : ""}
             </dd>
           </>
@@ -149,7 +194,22 @@ export function BookDetail({
           <>
             <dt>Жанры</dt>
             <dd title={book.genres.join(", ")}>
-              {book.genres.map(genreLabel).join(", ")}
+              {book.genres.map((code, i) => (
+                <span key={code}>
+                  {i > 0 && ", "}
+                  {onPickGenre ? (
+                    <button
+                      className="link"
+                      onClick={() => onPickGenre(code)}
+                      title={`Фильтр по жанру: ${code}`}
+                    >
+                      {genreLabel(code)}
+                    </button>
+                  ) : (
+                    genreLabel(code)
+                  )}
+                </span>
+              ))}
             </dd>
           </>
         )}

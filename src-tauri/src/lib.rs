@@ -57,6 +57,7 @@ pub fn run() {
             commands::list_languages,
             commands::list_genres,
             commands::list_archives,
+            commands::lookup_author_id,
             commands::list_author_letters,
             commands::list_author_prefixes,
             commands::list_authors_by_letter,

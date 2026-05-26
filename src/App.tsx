@@ -793,6 +793,13 @@ function App() {
             onRead={(book) => {
               openReaderWindow(book).catch((e) => setError(String(e)));
             }}
+            onPickAuthor={onPickAuthor}
+            onPickSeries={onPickSeries}
+            onPickGenre={(code) => {
+              setFilters((f) => ({ ...f, genre: code }));
+              setActiveSection("authors");
+              setTrail([{ kind: "browse", section: "authors" }]);
+            }}
           />
         </div>
         {error && (
