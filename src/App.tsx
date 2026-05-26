@@ -36,7 +36,7 @@ import { CenterLoader } from "./components/CenterLoader";
 import { invalidateAll as invalidateCache } from "./lib/cache";
 import type { SidebarSection } from "./components/Sidebar";
 
-const APP_VERSION = "0.2.2";
+const APP_VERSION = "0.2.3";
 import { FilterPanel, countActiveFilters } from "./components/FilterPanel";
 import { openReaderWindow } from "./lib/readerWindow";
 import { ImportOverlay } from "./components/ImportOverlay";
