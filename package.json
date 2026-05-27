@@ -1,7 +1,7 @@
 {
   "name": "mylib",
   "private": true,
-  "version": "0.2.3",
+  "version": "0.2.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,8 @@
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-dialog": "^2.2.0",
     "@tauri-apps/plugin-opener": "^2.2.0",
+    "@tauri-apps/plugin-process": "^2.2.0",
+    "@tauri-apps/plugin-updater": "^2.5.0",
     "@tanstack/react-virtual": "^3.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

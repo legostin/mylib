@@ -92,6 +92,12 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Updater signing — required so the in-app auto-updater can verify
+          # the downloaded bundle. Without these, tauri-action skips the
+          # updater artifacts and latest.json, and the client refuses to
+          # install the update.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}-{1}', '0.2.0', github.run_number) }}
           releaseName: "MyLib ${{ github.ref_type == 'tag' && github.ref_name || format('build {0}', github.run_number) }}"

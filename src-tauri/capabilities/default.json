@@ -11,6 +11,9 @@
     "core:event:default",
     "core:path:default",
     "dialog:default",
-    "opener:allow-open-url"
+    "opener:allow-open-url",
+    "updater:default",
+    "process:default",
+    "process:allow-restart"
   ]
 }

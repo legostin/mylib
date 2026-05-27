@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { CollectionInfo, LibraryStats, UserList } from "../lib/types";
 import { ShareBar } from "./ShareBar";
+import type { UpdaterState } from "../lib/updater";
 
 export type SidebarSection = "library" | "authors" | "series" | "genres" | "languages";
 
@@ -17,6 +18,8 @@ type Props = {
   onOpen: () => void;
   onAbout: () => void;
   busy: boolean;
+  updater: UpdaterState;
+  onInstallUpdate: () => void;
 };
 
 export function Sidebar({
@@ -32,6 +35,8 @@ export function Sidebar({
   onOpen,
   onAbout,
   busy,
+  updater,
+  onInstallUpdate,
 }: Props) {
   const empty = !stats || stats.books === 0;
   const [adding, setAdding] = useState(false);
@@ -210,8 +215,49 @@ export function Sidebar({
           <code>{shorten(collection.booksDir)}</code>
         </div>
       )}
+      <UpdateBanner state={updater} onInstall={onInstallUpdate} />
       <ShareBar disabled={empty || busy} />
     </aside>
+  );
+}
+
+function UpdateBanner({
+  state,
+  onInstall,
+}: {
+  state: UpdaterState;
+  onInstall: () => void;
+}) {
+  if (state.status === "downloading" || state.status === "installing") {
+    const { downloaded = 0, total = 0 } = state.progress ?? {};
+    const pct = total > 0 ? Math.min(100, Math.round((downloaded / total) * 100)) : null;
+    const label =
+      state.status === "installing"
+        ? "Устанавливаю обновление…"
+        : pct != null
+          ? `Загрузка обновления… ${pct}%`
+          : "Загрузка обновления…";
+    return (
+      <div className="update-banner downloading" title={state.update?.version}>
+        <div className="update-banner-text">{label}</div>
+        {pct != null && (
+          <div className="update-progress">
+            <div className="update-progress-fill" style={{ width: `${pct}%` }} />
+          </div>
+        )}
+      </div>
+    );
+  }
+  if (state.status !== "available" || !state.update) return null;
+  return (
+    <div className="update-banner">
+      <div className="update-banner-text">
+        Доступно обновление <strong>{state.update.version}</strong>
+      </div>
+      <button type="button" className="update-banner-btn" onClick={onInstall}>
+        Обновить
+      </button>
+    </div>
   );
 }
 

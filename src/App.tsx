@@ -35,8 +35,9 @@ import { AboutDialog } from "./components/AboutDialog";
 import { CenterLoader } from "./components/CenterLoader";
 import { invalidateAll as invalidateCache } from "./lib/cache";
 import type { SidebarSection } from "./components/Sidebar";
+import { useUpdater } from "./lib/updater";
 
-const APP_VERSION = "0.2.3";
+const APP_VERSION = "0.2.4";
 import { FilterPanel, countActiveFilters } from "./components/FilterPanel";
 import { openReaderWindow } from "./lib/readerWindow";
 import { ImportOverlay } from "./components/ImportOverlay";
@@ -105,6 +106,9 @@ function App() {
   const [activeSection, setActiveSection] = useState<SidebarSection>("library");
   const [aboutOpen, setAboutOpen] = useState(false);
   const [searching, setSearching] = useState(false);
+
+  const { state: updaterState, check: checkUpdate, install: installUpdate } =
+    useUpdater();
 
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [selection, setSelection] = useState<Selection>(emptySelection);
@@ -588,6 +592,8 @@ function App() {
         onOpen={onPick}
         onAbout={() => setAboutOpen(true)}
         busy={!!importing}
+        updater={updaterState}
+        onInstallUpdate={() => void installUpdate()}
       />
       <main className="main">
         <header className="topbar">
@@ -827,6 +833,9 @@ function App() {
         open={aboutOpen}
         version={APP_VERSION}
         onClose={() => setAboutOpen(false)}
+        updater={updaterState}
+        onCheck={() => void checkUpdate()}
+        onInstall={() => void installUpdate()}
       />
     </div>
   );

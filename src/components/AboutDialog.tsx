@@ -1,10 +1,14 @@
 import { useEffect } from "react";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import type { UpdaterState } from "../lib/updater";
 
 type Props = {
   open: boolean;
   version: string;
   onClose: () => void;
+  updater: UpdaterState;
+  onCheck: () => void;
+  onInstall: () => void;
 };
 
 const SITE_URL = "https://legost.in";
@@ -13,7 +17,14 @@ const SITE_URL = "https://legost.in";
 /// author's site. Opens via the Tauri opener plugin so the user's default
 /// browser handles `https://legost.in` instead of the webview navigating
 /// away from the app.
-export function AboutDialog({ open, version, onClose }: Props) {
+export function AboutDialog({
+  open,
+  version,
+  onClose,
+  updater,
+  onCheck,
+  onInstall,
+}: Props) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -50,9 +61,58 @@ export function AboutDialog({ open, version, onClose }: Props) {
             {SITE_URL}
           </button>
         </div>
+        <UpdaterSection
+          version={version}
+          state={updater}
+          onCheck={onCheck}
+          onInstall={onInstall}
+        />
         <div className="about-actions">
           <button onClick={onClose}>Закрыть</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function UpdaterSection({
+  version,
+  state,
+  onCheck,
+  onInstall,
+}: {
+  version: string;
+  state: UpdaterState;
+  onCheck: () => void;
+  onInstall: () => void;
+}) {
+  const busy = state.status === "checking" || state.status === "downloading" || state.status === "installing";
+
+  let line: string | null = null;
+  if (state.status === "checking") line = "Проверяю обновления…";
+  else if (state.status === "downloading") {
+    const { downloaded = 0, total = 0 } = state.progress ?? {};
+    const pct = total > 0 ? Math.min(100, Math.round((downloaded / total) * 100)) : null;
+    line = pct != null ? `Загрузка ${pct}%…` : "Загрузка…";
+  } else if (state.status === "installing") line = "Устанавливаю и перезапускаю…";
+  else if (state.status === "available" && state.update)
+    line = `Доступно обновление до ${state.update.version}.`;
+  else if (state.status === "error" && state.error) line = `Ошибка: ${state.error}`;
+  else if (state.lastCheck) line = `У вас установлена последняя версия (${version}).`;
+
+  return (
+    <div className="about-updater">
+      {line && <div className="about-updater-line">{line}</div>}
+      <div className="about-updater-actions">
+        {state.status === "available" ? (
+          <button className="primary" onClick={onInstall} disabled={busy}>
+            Обновить до {state.update?.version}
+          </button>
+        ) : (
+          <button onClick={onCheck} disabled={busy}>
+            Проверить обновления
+          </button>
+        )}
       </div>
     </div>
   );
